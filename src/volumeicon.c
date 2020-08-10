@@ -157,6 +157,7 @@ static void hotkey_handle(const char *key, void *user_data);
 static void volume_icon_load_icons();
 static void scale_update();
 static void notification_show();
+static gboolean retry_setup_cb(gpointer data);
 
 //##############################################################################
 // Static functions
@@ -749,6 +750,13 @@ static void volume_icon_launch_helper()
 	}
 }
 
+static void menu_reconnect_on_activate(GtkMenuItem *menuitem,
+                                       gpointer user_data)
+{
+    m_backend_is_setup = FALSE ;
+    retry_setup_cb( NULL );
+}
+
 static void menu_volcontrol_on_activate(GtkMenuItem *menuitem,
                                         gpointer user_data)
 {
@@ -897,6 +905,8 @@ static void status_icon_on_popup_menu(GtkStatusIcon *status_icon, guint button,
 
 	GtkWidget *volcontrol =
 	    gtk_image_menu_item_new_with_label(_("Open Mixer"));
+	GtkWidget *reconnect =
+	    gtk_image_menu_item_new_with_label(_("Reconnect"));
 	GtkWidget *separator1 = gtk_separator_menu_item_new();
 	GtkWidget *preferences =
 	    gtk_image_menu_item_new_from_stock("gtk-preferences", NULL);
@@ -905,6 +915,8 @@ static void status_icon_on_popup_menu(GtkStatusIcon *status_icon, guint button,
 	GtkWidget *quit = gtk_image_menu_item_new_from_stock("gtk-quit", NULL);
 	g_signal_connect(G_OBJECT(volcontrol), "activate",
 	                 G_CALLBACK(menu_volcontrol_on_activate), NULL);
+	g_signal_connect(G_OBJECT(reconnect), "activate",
+	                 G_CALLBACK(menu_reconnect_on_activate), NULL);
 	g_signal_connect(G_OBJECT(preferences), "activate",
 	                 G_CALLBACK(menu_preferences_on_activate), NULL);
 	g_signal_connect(G_OBJECT(quit), "activate",
@@ -913,6 +925,7 @@ static void status_icon_on_popup_menu(GtkStatusIcon *status_icon, guint button,
 	                 G_CALLBACK(menu_about_on_activate), NULL);
 
 	gtk_menu_shell_append(GTK_MENU_SHELL(gtkMenu), volcontrol);
+	gtk_menu_shell_append(GTK_MENU_SHELL(gtkMenu), reconnect);
 	gtk_menu_shell_append(GTK_MENU_SHELL(gtkMenu), separator1);
 	gtk_menu_shell_append(GTK_MENU_SHELL(gtkMenu), preferences);
 	gtk_menu_shell_append(GTK_MENU_SHELL(gtkMenu), about);
