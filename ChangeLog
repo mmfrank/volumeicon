@@ -1,6 +1,6 @@
 0.5.2:
-        - Added reconnect item to status icon menu.
-          - This reconnects the backend to pick up Pulse device/channel changes.
+        - Added 'Device refresh' item to status icon menu.
+          - This refreshes the backend to pick up Pulse device/channel changes.
 0.5.1:
 	- Added german and polish translations.
 	- Added commandline switch to turn off notifications.
